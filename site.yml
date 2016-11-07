@@ -2,3 +2,5 @@
 - hosts: local
   roles:
     - setup-hosts
+  vars_files:
+    - vars/secrets.yml
