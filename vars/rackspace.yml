@@ -1,0 +1,3 @@
+---
+openstack_provider: rackspace
+openstack_small_flavor: performance1-1

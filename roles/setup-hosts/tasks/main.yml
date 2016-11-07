@@ -1,4 +1,13 @@
 ---
+
+- include_vars:
+    file: vars/ovh.yml
+  when: ansible_env.OS_AUTH_URL == "https://auth.cloud.ovh.net/v2.0/"
+
+- include_vars:
+    file: vars/rackspace.yml
+  when: ansible_env.OS_AUTH_URL == "https://identity.api.rackspacecloud.com/v2.0"
+
 - name: Local cache directory
   file:
     path: cache
