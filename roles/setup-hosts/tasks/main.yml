@@ -1,4 +1,23 @@
 ---
-- template:
-    src: templates/hello.txt
-    dest: /tmp/hello.txt
+- name: Local cache directory
+  file:
+    path: cache
+    state: directory
+
+- name: Caching Gentoo Openstack Image
+  get_url:
+    # Image created by https://github.com/bencord0/genboot
+    url: https://dl.condi.me/gentoo-systemd/20160906/gentoo-systemd.qcow2
+    dest: cache/gentoo-systemd-20160906.qcow2
+    checksum: sha256:8870e75397a1fe08228d2b2944ef23a4ce640c42683bab6410a3455e7ae55024
+
+- name: Uploading Gentoo Openstack Image to Glance
+  os_image:
+    name: Gentoo systemd (20160906)
+    filename: cache/gentoo-systemd-20160906.qcow2
+    container_format: bare
+    disk_format: qcow2
+    min_disk: 9
+    min_ram: 1000
+    state: present
+    wait: yes
