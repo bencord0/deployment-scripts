@@ -1,10 +1,12 @@
 ---
 
-- include_vars:
+- name: Sourcing OVH variables
+  include_vars:
     file: vars/ovh.yml
   when: ansible_env.OS_AUTH_URL == "https://auth.cloud.ovh.net/v2.0/"
 
-- include_vars:
+- name: Sourcing Rackspace variables
+  include_vars:
     file: vars/rackspace.yml
   when: ansible_env.OS_AUTH_URL == "https://identity.api.rackspacecloud.com/v2.0"
 
@@ -22,7 +24,7 @@
 
 - name: Uploading Gentoo Openstack Image to Glance
   os_image:
-    name: Gentoo systemd (20160906)
+    name: "Gentoo systemd (20160906)"
     filename: cache/gentoo-systemd-20160906.qcow2
     container_format: bare
     disk_format: qcow2
@@ -30,3 +32,18 @@
     min_ram: 1000
     state: present
     wait: yes
+
+- name: Creating SSH Bastion Host
+  os_server:
+    name: bastion
+    state: present
+    flavor: "{{ openstack_small_flavor }}"
+    image: "Gentoo systemd (20160906)"
+    key_name: "{{ bastion_ssh_key_name }}"
+    meta:
+      ansible_host_groups: bastion
+      ansible_user: root
+    wait: yes
+
+- name: Refresh Dynamic Inventory
+  meta: refresh_inventory
