@@ -18,14 +18,14 @@
 - name: Caching Gentoo Openstack Image
   get_url:
     # Image created by https://github.com/bencord0/genboot
-    url: https://dl.condi.me/gentoo-systemd/20160906/gentoo-systemd.qcow2
-    dest: cache/gentoo-systemd-20160906.qcow2
-    checksum: sha256:8870e75397a1fe08228d2b2944ef23a4ce640c42683bab6410a3455e7ae55024
+    url: "{{ os_base_image_url }}"
+    dest: "{{ os_base_image_dest }}"
+    checksum: "{{ os_base_image_checksum }}"
 
 - name: Uploading Gentoo Openstack Image to Glance
   os_image:
-    name: "Gentoo systemd (20160906)"
-    filename: cache/gentoo-systemd-20160906.qcow2
+    name: "{{ os_base_image_name }}"
+    filename: "{{ os_base_image_dest }}"
     container_format: bare
     disk_format: qcow2
     min_disk: 9
@@ -33,17 +33,36 @@
     state: present
     wait: yes
 
+- name: Creating 20G volume
+  os_volume:
+    display_name: "build-artifacts"
+    size: 20
+    state: present
+    wait: yes
+
 - name: Creating SSH Bastion Host
   os_server:
     name: bastion
     state: present
-    flavor: "{{ openstack_small_flavor }}"
-    image: "Gentoo systemd (20160906)"
+    flavor: "{{ openstack_medium_flavor }}"
+    image: "{{ os_base_image_name }}"
     key_name: "{{ bastion_ssh_key_name }}"
     meta:
       ansible_host_groups: bastion
       ansible_user: root
+    volumes:
+      - "build-artifacts"
     wait: yes
+    timeout: 600  # A long time
+  register: bastion
+
+- name: Waiting for SSH
+  command: >
+    ssh -o BatchMode=yes "root@{{ bastion.openstack.public_v4 }}" true
+  register: result
+  until: result|success
+  retries: 300
+  delay: 5
 
 - name: Refresh Dynamic Inventory
   meta: refresh_inventory

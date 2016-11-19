@@ -1,3 +1,4 @@
 ---
 openstack_provider: ovh
 openstack_small_flavor: vps-ssd-1
+openstack_medium_flavor: vps-ssd-2

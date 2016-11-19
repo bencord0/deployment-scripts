@@ -4,3 +4,8 @@
     - setup-hosts
   vars_files:
     - vars/secrets.yml
+    - vars/inputs.yml
+
+- hosts: bastion
+  roles:
+    - bastion
