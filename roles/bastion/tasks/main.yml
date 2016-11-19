@@ -1,4 +1,45 @@
 ---
-- template:
-    src: templates/hello.txt
-    dest: /tmp/hello.txt
+- name: "Formatting filesystem"
+  filesystem:
+    fstype: xfs
+    dev: /dev/vdb
+
+- name: "Mount build-artifacts"
+  mount:
+    name: /mnt/gentoo
+    src: /dev/vdb
+    fstype: xfs
+    state: present
+
+- name: "Ensure directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /usr/src
+    - /root
+    - /usr/portage
+
+- name: "Bind mount paths"
+  mount:
+    name: "{{ item.name }}"
+    src: "{{ item.src }}"
+    fstype: bind
+    state: present
+    opts: bind
+  with_items:
+    - { name: "/usr/src", src: "/mnt/gentoo/src" }
+    - { name: "/root", src: "/mnt/gentoo/root" }
+    - { name: "/usr/portage", src: "/mnt/gentoo/portage" }
+
+- name: "Ensure /root/.ssh directory"
+  file:
+    path: "/root/.ssh"
+    state: directory
+
+- name: "Ensure ssh key in new root HOME"
+  lineinfile:
+    create: yes
+    dest: /root/.ssh/authorized_keys
+    line: "{{ bastion_ssh_key }}"
+    state: present

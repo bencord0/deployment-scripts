@@ -9,3 +9,5 @@
 - hosts: bastion
   roles:
     - bastion
+  vars_files:
+    - vars/secrets.yml
