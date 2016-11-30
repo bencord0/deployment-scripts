@@ -16,21 +16,33 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - /usr/src
     - /root
+    - /usr/src
     - /usr/portage
+    - /var/tmp/portage
+    - /var/lib/portage/distfiles
+    - /var/lib/portage/packages
+    - /mnt/gentoo/root
+    - /mnt/gentoo/src
+    - /mnt/gentoo/portage
+    - /mnt/gentoo/var-tmp-portage
+    - /mnt/gentoo/distfiles
+    - /mnt/gentoo/packages
 
 - name: "Bind mount paths"
   mount:
     name: "{{ item.name }}"
     src: "{{ item.src }}"
     fstype: bind
-    state: present
+    state: mounted
     opts: bind
   with_items:
-    - { name: "/usr/src", src: "/mnt/gentoo/src" }
     - { name: "/root", src: "/mnt/gentoo/root" }
+    - { name: "/usr/src", src: "/mnt/gentoo/src" }
     - { name: "/usr/portage", src: "/mnt/gentoo/portage" }
+    - { name: "/var/tmp/portage", src: "/mnt/gentoo/var-tmp-portage" }
+    - { name: "/var/lib/portage/distfiles", src: "/mnt/gentoo/distfiles" }
+    - { name: "/var/lib/portage/packages", src: "/mnt/gentoo/packages" }
 
 - name: "Ensure /root/.ssh directory"
   file:
