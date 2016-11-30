@@ -32,6 +32,9 @@
     min_ram: 1000
     state: present
     wait: yes
+    properties:
+      distro: gentoo
+      vendor: bencord0
 
 - name: Creating 20G volume
   os_volume:
