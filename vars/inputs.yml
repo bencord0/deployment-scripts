@@ -1,4 +1,4 @@
-os_base_image_name: "Gentoo systemd (20161129)"
-os_base_image_url: https://dl.condi.me/gentoo-systemd/20161129/gentoo-systemd.qcow2
-os_base_image_dest: cache/gentoo-systemd-20161129.qcow2
-os_base_image_checksum: sha256:32b54d54e4acbf94005e09e4bb1ea84d00063c234d3c48cfaf1a5e8b814bdd51
+os_base_image_name: "Gentoo systemd (20161203)"
+os_base_image_url: https://dl.condi.me/gentoo-systemd/20161203/gentoo-systemd.qcow2
+os_base_image_dest: cache/gentoo-systemd-20161203.qcow2
+os_base_image_checksum: sha256:9f482014194ce69d7850c3c62c3fc4ba9d5ca49e0ada958d57f5749ff7adb015
