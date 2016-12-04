@@ -1,4 +1,14 @@
 ---
+- name: Portage Overlay (bencord0)
+  template:
+    src: bencord0.conf
+    dest: /etc/portage/repos.conf/bencord0.conf
+
+- name: Git Overlay (bencord0)
+  git:
+    repo: 'https://github.com/bencord0/portage-overlay'
+    dest: /usr/local/portage
+
 - name: Package Keywords
   template:
     src: "{{ item.src }}"
@@ -15,15 +25,23 @@
   with_items:
     - { src: dev-python.use, dest: /etc/portage/package.use/dev-python }
 
-- name: Graphite state directory
+- name: Graphite Directories
   file:
-    path: /var/lib/graphite-web
+    path: "{{ item }}"
     state: directory
+  with_items:
+    - /var/lib/graphite-web
+    - /var/log/graphite-web
 
 - name: Graphite index file
   file:
     path: /var/lib/graphite-web/index
     state: touch
+
+- name: Carbon-Cache Configuration Directory
+  file:
+    path: /etc/carbon
+    state: directory
 
 - name: Carbon-Cache Configuration Files
   template:
@@ -31,7 +49,12 @@
     dest: "{{ item.dest }}"
   with_items:
     - { src: carbon.conf, dest: /etc/carbon/carbon.conf }
-    - { src: storage-schemas.conf, /etc/carbon/storage-schemas.conf }
+    - { src: storage-schemas.conf, dest: /etc/carbon/storage-schemas.conf }
+
+- name: Statsd Configuration File
+  template:
+    src: statsd.conf
+    dest: /etc/statsd.conf
 
 - name: Systemd Services
   template:
@@ -41,6 +64,7 @@
     - { src: carbon-cache.service, dest: /etc/systemd/system/carbon-cache.service }
     - { src: graphite.service, dest: /etc/systemd/system/graphite.service }
     - { src: grafana.service, dest: /etc/systemd/system/grafana.service }
+    - { src: statsd.service, dest: /etc/systemd/system/statsd.service }
 
 - name: Install Packages
   portage:
@@ -48,6 +72,7 @@
     state: present
   with_items:
     - dev-python/carbon
+    - dev-python/statsdpy
     - net-analyzer/graphite-web
     - www-apps/grafana-bin
 
@@ -60,3 +85,4 @@
     - carbon-cache.service
     - grafana.service
     - graphite.service
+    - statsd.service
