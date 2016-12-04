@@ -1,0 +1,7 @@
+[Service]
+Environment=GRAPHITE_CONF_DIR=/etc/carbon
+Environment=GRAPHITE_STORAGE_DIR=/var/lib/carbon
+ExecStart=/usr/bin/python2.7 /usr/lib/python-exec/python2.7/carbon-cache.py --debug --config=/etc/carbon/carbon.conf --logdir=/var/log/carbon/ start
+
+[Install]
+WantedBy=default.target

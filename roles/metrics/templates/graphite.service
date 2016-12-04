@@ -1,0 +1,5 @@
+[Service]
+ExecStart=/usr/bin/graphite-web-manage runserver
+
+[Install]
+WantedBy=default.target

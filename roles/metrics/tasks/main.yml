@@ -1,0 +1,62 @@
+---
+- name: Package Keywords
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: dev-python.keywords, dest: /etc/portage/package.keywords/dev-python }
+    - { src: net-analyzer.keywords, dest: /etc/portage/package.keywords/net-analyzer }
+    - { src: www-apps.keywords, dest: /etc/portage/package.keywords/www-apps }
+
+- name: Package Use
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: dev-python.use, dest: /etc/portage/package.use/dev-python }
+
+- name: Graphite state directory
+  file:
+    path: /var/lib/graphite-web
+    state: directory
+
+- name: Graphite index file
+  file:
+    path: /var/lib/graphite-web/index
+    state: touch
+
+- name: Carbon-Cache Configuration Files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: carbon.conf, dest: /etc/carbon/carbon.conf }
+    - { src: storage-schemas.conf, /etc/carbon/storage-schemas.conf }
+
+- name: Systemd Services
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: carbon-cache.service, dest: /etc/systemd/system/carbon-cache.service }
+    - { src: graphite.service, dest: /etc/systemd/system/graphite.service }
+    - { src: grafana.service, dest: /etc/systemd/system/grafana.service }
+
+- name: Install Packages
+  portage:
+    package: "{{ item }}"
+    state: present
+  with_items:
+    - dev-python/carbon
+    - net-analyzer/graphite-web
+    - www-apps/grafana-bin
+
+- name: Enable Services
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - carbon-cache.service
+    - grafana.service
+    - graphite.service

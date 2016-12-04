@@ -1,0 +1,9 @@
+[Service]
+sudo -u grafana -g grafana grafana-server -config=/etc/grafana/grafana.ini cfg:default.paths.data=/var/lib/grafana cfg:default.paths.logs=/var/log/grafana
+WorkingDirectory=/usr/share/grafana
+User=grafana
+Group=grafana
+ExecStart=/usr/bin/grafana-server -config=/etc/grafana/grafana.ini cfg:default.paths.data=/var/lib/grafana cfg:default.paths.logs=/var/log/grafana
+
+[Install]
+WantedBy=default.target
