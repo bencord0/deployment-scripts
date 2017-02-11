@@ -1,0 +1,5 @@
+---
+- name: Portage Overlay (bencord0)
+  template:
+    src: bencord0.conf
+    dest: /etc/portage/repos.conf/bencord0.conf

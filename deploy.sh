@@ -1,8 +1,16 @@
 #!/bin/bash
-set -ex -o pipefail
+set -e -o pipefail
+
+if [[ -z "${1}" ]]; then
+  echo "No deployment specified"
+  exit 1
+fi
+
+_deployment="${1}"
 
 _SECRETS="
   vars/secrets.yml
+  vars/environment.sh
 "
 
 decrypt_secrets() {
@@ -20,4 +28,5 @@ destroy_secrets() {
 trap destroy_secrets EXIT
 decrypt_secrets
 
-ansible-playbook -i inventory site.yml
+source vars/environment.sh
+ansible-playbook -i inventory "${_deployment}.yml"

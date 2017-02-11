@@ -1,0 +1,8 @@
+[kubernetes]
+kube1.condi.me
+kube2.condi.me
+kube3.condi.me
+kube4.condi.me
+
+[kubernetes:vars]
+ansible_user=root
