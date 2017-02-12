@@ -1,0 +1,4 @@
+[Service]
+ExecStart=
+ExecStart=/usr/bin/kube-controller-manager --kubeconfig /etc/kubernetes/kubeconfig
+Restart=on-failure

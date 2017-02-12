@@ -1,0 +1,96 @@
+---
+# Install Software ###########################################################
+- name: Package Keywords
+  template:
+    src: "{{ item }}.keywords"
+    dest: "/etc/portage/package.keywords/{{ item }}"
+  with_items:
+    - app-emulation
+    - net-misc
+    - sys-cluster
+    - sys-process
+
+- name: Package Use
+  template:
+    src: "{{ item }}.use"
+    dest: "/etc/portage/package.use/{{ item }}"
+  with_items:
+    - sys-process
+
+- name: Install Packages
+  portage:
+    package: "{{ item }}"
+    state: present
+  with_items:
+    - app-emulation/docker
+    - app-emulation/flannel
+    - sys-cluster/kubernetes
+
+# Drop-in Configuration ######################################################
+- name: Ensure Configuration Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/flanneld
+    - /etc/kubernetes
+    - /etc/systemd/system/docker.service.d
+    - /etc/systemd/system/flanneld.service.d
+    - /etc/systemd/system/kubelet.service.d
+    - /etc/systemd/system/kube-apiserver.service.d
+    - /etc/systemd/system/kube-scheduler.service.d
+    - /etc/systemd/system/kube-controller-manager.service.d
+    - /etc/systemd/system/kube-dns.service.d
+    - /etc/systemd/system/kube-proxy.service.d
+
+- name: Drop-in configuration
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+
+    # Service Environment Files
+    - src: flanneld.env
+      dest: /etc/flanneld/environment
+    - src: kubernetes.env
+      dest: /etc/kubernetes/environment
+
+    # Master Service Overrides
+    - src: kube-apiserver.service.override
+      dest: /etc/systemd/system/kube-apiserver.service.d/override.conf
+    - src: kube-scheduler.service.override
+      dest: /etc/systemd/system/kube-scheduler.service.d/override.conf
+    - src: kube-controller-manager.service.override
+      dest: /etc/systemd/system/kube-controller-manager.service.d/override.conf
+    - src: kube-dns.service.override
+      dest: /etc/systemd/system/kube-dns.service.d/override.conf
+
+    # Worker Service overrides
+    - src: docker.service.override
+      dest: /etc/systemd/system/docker.service.d/override.conf
+    - src: flanneld.service.environment
+      dest: /etc/systemd/system/flanneld.service.d/environment.conf
+    - src: kubelet.service.override
+      dest: /etc/systemd/system/kubelet.service.d/override.conf
+
+    # All Nodes
+    - src: kube-proxy.service.override
+      dest: /etc/systemd/system/kube-proxy.service.d/override.conf
+
+    # TLS Certificates
+    - src: secrets/certs/ca.pem
+      dest: /etc/kubernetes/ca.pem
+    - src: secrets/certs/server.pem
+      dest: /etc/kubernetes/server.pem
+    - src: secrets/secrets/server.key
+      dest: /etc/kubernetes/server.key
+
+    # Cluster configuration
+    - src: kubeconfig
+      dest: /etc/kubernetes/kubeconfig
+
+  register: drop_in_config
+
+- name: systemd daemon-reload
+  command: systemctl daemon-reload
+  when: drop_in_config.changed
