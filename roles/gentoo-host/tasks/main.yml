@@ -3,3 +3,8 @@
   template:
     src: bencord0.conf
     dest: /etc/portage/repos.conf/bencord0.conf
+
+- name: Sync overlay (bencord0)
+  command: emaint sync -r bencord0
+  args:
+    creates: /usr/local/portage/README
