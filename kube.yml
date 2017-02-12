@@ -2,4 +2,6 @@
 - hosts: kubernetes
   roles:
     - gentoo-host
-
+    - kubernetes-base
+  vars_files:
+    - vars/inputs.yml
