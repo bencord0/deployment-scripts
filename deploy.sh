@@ -29,4 +29,4 @@ trap destroy_secrets EXIT
 decrypt_secrets
 
 source vars/environment.sh
-ansible-playbook -i inventory "${_deployment}.yml"
+ansible-playbook --inventory-file inventory --diff "${_deployment}.yml"
