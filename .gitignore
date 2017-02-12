@@ -1,4 +1,6 @@
 cache
+secrets/secrets
+secrets/certs
 
 *.retry
 vars/secrets.yml
