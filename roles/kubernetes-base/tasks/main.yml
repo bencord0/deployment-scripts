@@ -88,6 +88,8 @@
     # Cluster configuration
     - src: kubeconfig
       dest: /etc/kubernetes/kubeconfig
+    - src: pause.yml
+      dest: /etc/kubernetes/manifests/pause.yml
 
   register: drop_in_config
 
