@@ -10,6 +10,7 @@
     src: portage.condi.me:/usr/portage
     fstype: nfs4
     state: mounted
+    opts: "noauto,x-systemd.automount"
 
 - name: Portage Overlay (bencord0)
   template:
