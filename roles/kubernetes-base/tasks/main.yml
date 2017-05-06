@@ -35,6 +35,7 @@
     - /etc/flanneld
     - /etc/kubernetes
     - /etc/systemd/system/docker.service.d
+    - /etc/systemd/system/docker.service.wants
     - /etc/systemd/system/flanneld.service.d
     - /etc/systemd/system/kubelet.service.d
     - /etc/systemd/system/kube-apiserver.service.d
@@ -42,6 +43,15 @@
     - /etc/systemd/system/kube-controller-manager.service.d
     - /etc/systemd/system/kube-dns.service.d
     - /etc/systemd/system/kube-proxy.service.d
+
+- name: Ensure Configuration Symlinks
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - src: /usr/lib64/systemd/system/zfs.service
+      dest: /etc/systemd/system/docker.service.wants/zfs.service
 
 - name: Drop-in configuration
   template:
