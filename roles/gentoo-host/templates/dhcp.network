@@ -1,0 +1,8 @@
+[Match]
+Name=*
+
+[Network]
+DHCP=both
+
+[DHCP]
+UseDomains=true

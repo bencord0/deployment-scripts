@@ -1,4 +1,9 @@
 ---
+- name: dhcp.network
+  template:
+    src: dhcp.network
+    dest: /etc/systemd/network/dhcp.network
+
 - name: make.conf
   template:
     src: make.conf
