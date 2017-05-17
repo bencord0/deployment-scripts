@@ -3,6 +3,11 @@
   template:
     src: dhcp.network
     dest: /etc/systemd/network/dhcp.network
+  register: network_config
+
+- name: reload network
+  command: systemctl restart systemd-networkd
+  when: network_config.changed
 
 - name: make.conf
   template:
