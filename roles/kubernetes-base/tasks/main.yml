@@ -24,6 +24,7 @@
   with_items:
     - app-emulation/docker
     - app-emulation/flannel
+    - net-misc/socat
     - sys-cluster/kubernetes
 
 # Drop-in Configuration ######################################################
