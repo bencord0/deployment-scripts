@@ -12,3 +12,21 @@
     - kube-apiserver.service
     - kube-controller-manager.service
     - kube-scheduler.service
+
+
+- name: systemd daemon-reload
+  command: systemctl daemon-reload
+  when: package_versions.changed
+
+- name: Restart Service
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - flanneld.service
+    - docker.socket
+    - kubelet.service
+    - kube-proxy.service
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service

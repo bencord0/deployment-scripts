@@ -1,3 +1,4 @@
 [Service]
 ExecStart=
 ExecStart=/usr/bin/kubelet --pod-manifest-path=/etc/kubernetes/manifests --require-kubeconfig --kubeconfig=/etc/kubernetes/kubeconfig --node-ip=${MYIP}
+Restart=on-failure

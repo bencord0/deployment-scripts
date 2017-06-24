@@ -20,13 +20,14 @@
 - name: Install Packages
   portage:
     package: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - app-emulation/docker
     - app-emulation/flannel
     - net-misc/socat
     - sys-cluster/glusterfs
     - sys-cluster/kubernetes
+  register: package_versions
 
 # Drop-in Configuration ######################################################
 - name: Ensure Configuration Directories
