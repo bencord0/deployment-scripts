@@ -3,5 +3,6 @@
   roles:
     - gentoo-host
     - kubernetes-base
+    - kubernetes-activate
   vars_files:
     - vars/inputs.yml

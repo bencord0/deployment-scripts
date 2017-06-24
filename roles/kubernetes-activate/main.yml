@@ -1,0 +1,14 @@
+---
+- name: Enable Service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - flanneld.service
+    - docker.socket
+    - kubelet.service
+    - kube-proxy.service
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service
