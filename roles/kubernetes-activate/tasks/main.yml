@@ -6,13 +6,22 @@
     enabled: yes
   with_items:
     - flanneld.service
-    - docker.socket
     - kubelet.service
     - kube-proxy.service
     - kube-apiserver.service
     - kube-controller-manager.service
     - kube-scheduler.service
 
+# Socket services cannot start if their
+# .service is already running.
+- name: Enable Sockets
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - docker.socket
+  ignore_errors: True
 
 - name: systemd daemon-reload
   command: systemctl daemon-reload
