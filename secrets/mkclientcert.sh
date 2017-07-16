@@ -1,29 +1,9 @@
 #!/bin/bash
 CERTROOT="$(dirname "$(readlink -fn "${BASH_SOURCE[0]}")")"
 
-ensure_dir() {
-  mkdir -p "${CERTROOT}/${1}"
-}
-
 ensure_key() {
   if [[ ! -e "${CERTROOT}/secrets/${1}" ]]; then
     certtool --generate-privkey > "${CERTROOT}/secrets/${1}"
-  fi
-}
-
-ensure_ca_cert() {
-  # $1: certificate path
-  # $2: secret key path
-  # $3: template path
-  CERT_PATH="${CERTROOT}/certs/${1}"
-  KEY_PATH="${CERTROOT}/secrets/${2}"
-  TEMPLATE_PATH="${CERTROOT}/templates/${3}"
-
-  if [[ ! -e "${CERT_PATH}" ]]; then
-    certtool --generate-self-signed \
-      --load-privkey "${KEY_PATH}" \
-      --template "${TEMPLATE_PATH}" \
-      --outfile "${CERT_PATH}"
   fi
 }
 
@@ -50,11 +30,32 @@ ensure_cert() {
   fi
 }
 
-ensure_dir secrets
-ensure_dir certs
+ensure_template() {
 
-ensure_key ca.key
-ensure_key server.key
+  # DN examples
+  # CN=$username
+  # CN=$username,O=$group1
+  # CN=$username,O=$group1,O=$group2
 
-ensure_ca_cert ca.pem ca.key ca.template
-ensure_cert server.pem server.key server.template ca.pem ca.key
+  USERNAME="${1}"
+  local DN="CN=${USERNAME}"
+  shift
+
+  while [[ -n "${1}" ]]; do
+    DN="${DN},O=${1}"
+    shift
+  done
+
+  echo "Creating certificate for ${DN}"
+  m4 -D DN="${DN}" \
+    < "${CERTROOT}/templates/client.template.in" \
+    > "${CERTROOT}/templates/${USERNAME}.template"
+}
+
+if [[ -z "${1}" ]]; then
+  exit 1
+fi
+
+ensure_key "${1}.key"
+ensure_template $@
+ensure_cert "${1}.pem" "${1}.key" "${1}.template" ca.pem ca.key
