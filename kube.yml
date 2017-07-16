@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: kubernetes
   roles:
     - gentoo-host
     - kubernetes-base
