@@ -22,6 +22,11 @@
     state: mounted
     opts: "noauto,x-systemd.automount"
 
+- name: Portage Tree (disable sync from rsync)
+  template:
+    src: gentoo.conf
+    dest: /etc/portage/repos.conf/gentoo.conf
+
 - name: Portage Overlay (bencord0)
   template:
     src: bencord0.conf
