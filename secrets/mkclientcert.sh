@@ -20,14 +20,12 @@ ensure_cert() {
   CA_CERT_PATH="${CERTROOT}/certs/${4}"
   CA_KEY_PATH="${CERTROOT}/secrets/${5}"
 
-  if [[ ! -e "${CERT_PATH}" ]]; then
-    certtool --generate-certificate \
+  certtool --generate-certificate \
       --load-privkey "${KEY_PATH}" \
       --load-ca-privkey "${CA_KEY_PATH}" \
       --load-ca-certificate "${CA_CERT_PATH}" \
       --template "${TEMPLATE_PATH}" \
       --outfile "${CERT_PATH}"
-  fi
 }
 
 ensure_template() {
@@ -53,6 +51,7 @@ ensure_template() {
 }
 
 if [[ -z "${1}" ]]; then
+  echo "usage: ${0} <username> [group]..."
   exit 1
 fi
 
