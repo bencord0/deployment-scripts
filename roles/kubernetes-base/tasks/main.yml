@@ -27,6 +27,7 @@
     - net-misc/socat
     - sys-cluster/glusterfs
     - sys-cluster/kubernetes
+    - net-dns/kube-dns
   register: package_versions
 
 # Drop-in Configuration ######################################################

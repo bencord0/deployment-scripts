@@ -11,6 +11,7 @@
     - kube-apiserver.service
     - kube-controller-manager.service
     - kube-scheduler.service
+    - kube-dns.service
 
 # Socket services cannot start if their
 # .service is already running.
@@ -38,3 +39,4 @@
     - kube-apiserver.service
     - kube-controller-manager.service
     - kube-scheduler.service
+    - kube-dns.service
