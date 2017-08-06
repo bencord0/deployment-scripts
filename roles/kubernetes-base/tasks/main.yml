@@ -6,6 +6,7 @@
     dest: "/etc/portage/package.keywords/{{ item }}"
   with_items:
     - app-emulation
+    - net-dns
     - net-misc
     - sys-cluster
     - sys-process
