@@ -1,4 +1,4 @@
 [Service]
 ExecStart=
-ExecStart=/usr/bin/dockerd -H fd:// $DOCKER_NETWORK_OPTIONS --iptables=false
+ExecStart=/usr/bin/dockerd -H fd:// $DOCKER_NETWORK_OPTIONS
 ExecStartPost=/usr/sbin/sysctl -w net.ipv4.conf.docker0.forwarding=1
