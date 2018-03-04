@@ -19,6 +19,14 @@
   command: systemctl restart systemd-resolved
   when: resolved_conf.changed
 
+# Drop-in Configuration ######################################################
+- name: Ensure Configuration Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - /etc/systemd/system/systemd-modules-load.service.d
+
 - name: Drop-in configuration
   template:
     src: "{{ item.src }}"
@@ -32,6 +40,8 @@
     dest: /etc/portage/repos.conf/bencord0.conf
   - src: bridge.conf
     dest: /etc/modules-load.d/bridge.conf
+  - src: systemd-modules-load.service.override
+    dest: /etc/systemd/system/systemd-modules-load.service.d/override.conf
 
 - name: Portage Tree
   mount:
