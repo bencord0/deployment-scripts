@@ -1,0 +1,34 @@
+---
+- name: Enable Service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - flanneld.service
+    - kubelet.service
+    - kube-proxy.service
+
+# Socket services cannot start if their
+# .service is already running.
+- name: Enable Sockets
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - docker.socket
+  ignore_errors: True
+
+- name: systemd daemon-reload
+  command: systemctl daemon-reload
+  when: kubernetes_package_versions.changed
+
+- name: Restart Service
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - flanneld.service
+    - kubelet.service
+    - kube-proxy.service

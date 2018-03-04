@@ -1,8 +1,19 @@
 ---
 - hosts: kubernetes
   roles:
-    - gentoo-host
-    - kubernetes-base
-    - kubernetes-activate
+  - gentoo-host
+  - kubernetes-base
   vars_files:
-    - vars/inputs.yml
+  - vars/inputs.yml
+
+- hosts: k8s-api
+  roles:
+  - kubernetes-api
+  vars_files:
+  - vars/inputs.yml
+
+- hosts: k8s-nodes
+  roles:
+  - kubernetes-nodes
+  vars_files:
+  - vars/inputs.yml

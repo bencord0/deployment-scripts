@@ -1,5 +1,11 @@
-[kubernetes]
+[kubernetes:children]
+k8s-api
+k8s-nodes
+
+[k8s-api]
 kube1.condi.me
+
+[k8s-nodes]
 kube2.condi.me
 kube3.condi.me
 kube4.condi.me

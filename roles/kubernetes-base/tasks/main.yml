@@ -29,7 +29,7 @@
     - sys-cluster/glusterfs
     - sys-cluster/kubernetes
     - net-dns/kube-dns
-  register: package_versions
+  register: kubernetes_package_versions
 
 # Drop-in Configuration ######################################################
 - name: Ensure Configuration Directories

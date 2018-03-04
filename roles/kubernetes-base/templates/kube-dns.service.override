@@ -1,4 +1,4 @@
 [Service]
 ExecStart=
-ExecStart=/usr/bin/kube-dns --kubecfg-file /etc/kubernetes/kubeconfig
+ExecStart=/usr/bin/kube-dns --kubecfg-file /etc/kubernetes/kubeconfig --healthz-port=0 --nameservers ${NAMESERVERIP}
 Restart=on-failure
