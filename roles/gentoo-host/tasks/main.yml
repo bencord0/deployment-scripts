@@ -19,10 +19,19 @@
   command: systemctl restart systemd-resolved
   when: resolved_conf.changed
 
-- name: make.conf
+- name: Drop-in configuration
   template:
-    src: make.conf
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - src: make.conf
     dest: /etc/portage/make.conf
+  - src: gentoo.conf
+    dest: /etc/portage/repos.conf/gentoo.conf
+  - src: bencord0.conf
+    dest: /etc/portage/repos.conf/bencord0.conf
+  - src: bridge.conf
+    dest: /etc/modules-load.d/bridge.conf
 
 - name: Portage Tree
   mount:
@@ -31,16 +40,6 @@
     fstype: nfs4
     state: mounted
     opts: "noauto,x-systemd.automount"
-
-- name: Portage Tree (disable sync from rsync)
-  template:
-    src: gentoo.conf
-    dest: /etc/portage/repos.conf/gentoo.conf
-
-- name: Portage Overlay (bencord0)
-  template:
-    src: bencord0.conf
-    dest: /etc/portage/repos.conf/bencord0.conf
 
 - name: Sync overlay (bencord0)
   command: emaint sync -r bencord0
@@ -56,3 +55,31 @@
 - name: Generate locales
   command: locale-gen
   when: localegen.changed
+
+- name: Install Packages
+  portage:
+    package: "{{ item }}"
+    state: latest
+  with_items:
+  - sys-cluster/ganglia
+  register: gentoo_host_package_versions
+
+- name: Enable Service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+  - gmond.service
+
+- name: systemd daemon-reload
+  command: systemctl daemon-reload
+  when: gentoo_host_package_versions.changed
+
+- name: Restart Service
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+  - gmond.service
+  when: gentoo_host_package_versions.changed
