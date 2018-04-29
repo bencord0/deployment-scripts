@@ -16,6 +16,7 @@
     src: "{{ item }}.use"
     dest: "/etc/portage/package.use/{{ item }}"
   with_items:
+    - sys-cluster
     - sys-process
 
 - name: Install Packages
