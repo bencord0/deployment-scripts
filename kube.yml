@@ -5,6 +5,7 @@
   - kubernetes-base
   vars_files:
   - vars/inputs.yml
+  - vars/secrets.yml
 
 - hosts: k8s-api
   roles:
