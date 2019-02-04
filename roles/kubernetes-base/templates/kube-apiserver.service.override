@@ -1,4 +1,4 @@
 [Service]
 ExecStart=
-ExecStart=/usr/bin/kube-apiserver --etcd-servers=${ETCD_SERVERS} --service-cluster-ip-range=${SERVICE_CLUSTER_IP_RANGE} --client-ca-file=/etc/kubernetes/ca.pem --tls-cert-file=/etc/kubernetes/server.pem --tls-private-key-file=/etc/kubernetes/server.key --admission-control=AlwaysAdmit,ServiceAccount --authorization-mode=RBAC
+ExecStart=/usr/bin/kube-apiserver --etcd-servers=${ETCD_SERVERS} --service-cluster-ip-range=${SERVICE_CLUSTER_IP_RANGE} --client-ca-file=/etc/kubernetes/ca.pem --tls-cert-file=/etc/kubernetes/server.pem --tls-private-key-file=/etc/kubernetes/server.key --authorization-mode=RBAC --oidc-issuer-url=${OIDC_ISSUER_URL} --oidc-client-id=${OIDC_CLIENT_ID}
 Restart=on-failure
